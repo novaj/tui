@@ -38,11 +38,17 @@ class TuiParserController extends AppController {
 		
 		//Convert dates
 		$depDate = DateTime::createFromFormat("d/m/Y", $data["scheduleDeparture"]);
-		$data["scheduleDeparture"] = $depDate->format("Ymd");
+		
+		if($depDate) {
+			$data["scheduleDeparture"] = $depDate->format("Ymd");
+		}
 		
 		if($flightType == "round-trip") {
 			$retDate = DateTime::createFromFormat("d/m/Y", $data["scheduleReturn"]);
-			$data["scheduleReturn"] = $retDate->format("Ymd");
+			
+			if($retDate) {
+				$data["scheduleReturn"] = $retDate->format("Ymd");
+			}
 		}
 		
 		$this->TuiParser->set($data);
@@ -101,8 +107,8 @@ class TuiParserController extends AppController {
 			}
 		}
 		
-		asort($dates["OUT"]);
-		asort($dates["RET"]);
+//		asort($dates["OUT"]);
+//		asort($dates["RET"]);
 		
 		return json_encode($dates);
 	}

@@ -11,7 +11,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-sm-6">
+					<div id="outboundDetails" class="col-sm-6">
 						<h4><?= __("Outbound flight") ?></h4>
 						<p id="outboundCarrier"></p>
 						<p id="outboundDate"></p>
@@ -20,7 +20,7 @@
 						<p id="outboundPrice" class="text-right price bg-info text-info"></p>
 					</div>
 						
-					<div class="col-sm-6">
+					<div id="returnDetails" class="col-sm-6">
 						<h4><?= __("Return flight") ?></h4>
 						<p id="returnCarrier"></p>
 						<p id="returnDate"></p>

@@ -7,15 +7,24 @@ function changeType(roundTrip) {
 	}
 }
 
-function enableConfirm(id, type) {
+function enableConfirm(id) {
 	var fields = ["Carrier", "Date", "Airports", "Time", "Price"];
 	
+	$("#modalFlightsDetails p").html("");
+	
 	for(var i in fields) {
-		$("#modalFlightsDetails #" + type + fields[i]).html($("#" + type + "Flight" + id + " #" + type + fields[i]).html());
+		$("#modalFlightsDetails #outbound" + fields[i]).html($("#outboundFlight" + id + " #outbound" + fields[i]).html());
+		$("#modalFlightsDetails #return" + fields[i]).html($("#returnFlight" + id + " #return" + fields[i]).html());
 	}
 	
-	if($("[name='outboundFlight']:checked").length && $("[name='returnFlight']:checked").length) {
-		$("#confirmButton").removeAttr("disabled").removeClass("disabled");
+	if($("[value='round-trip']:checked").length) {
+		if($("[name='outboundFlight']:checked").length && $("[name='returnFlight']:checked").length) {
+			$("#confirmButton").removeAttr("disabled").removeClass("disabled");
+		}
+	} else {
+		if($("[name='outboundFlight']:checked").length) {
+			$("#confirmButton").removeAttr("disabled").removeClass("disabled");
+		}
 	}
 }
 
@@ -55,16 +64,16 @@ function fillSchedule() {
 			var dateFound = false;
 			
 			for(var i in dates["OUT"]) {
-				enabledDates[enabledDates.length] = moment(dates["OUT"][i]);
+				enabledDates[enabledDates.length] = moment(dates["OUT"][i], "DD/MM/YYYY");
 			}
-			
+
 			$("#scheduleDeparture").data("DateTimePicker").enabledDates(enabledDates);
 			
 			if($("#scheduleDeparture").val() != "") {
 				currentDate = moment($("#scheduleDeparture").val(), "DD/MM/YYYY");
 				
 				for(var i in enabledDates) {
-					dateFound = enabledDates[i] == currentDate;
+					dateFound = enabledDates[i].format("x") == currentDate.format("x");
 					
 					if(dateFound) {
 						break;
@@ -80,7 +89,7 @@ function fillSchedule() {
 			dateFound = false;
 			
 			for(var i in dates["RET"]) {
-				enabledDates[enabledDates.length] = moment(dates["RET"][i]);
+				enabledDates[enabledDates.length] = moment(dates["RET"][i], "DD/MM/YYYY");
 			}
 			
 			$("#scheduleReturn").data("DateTimePicker").enabledDates(enabledDates);
@@ -89,7 +98,7 @@ function fillSchedule() {
 				currentDate = moment($("#scheduleReturn").val(), "DD/MM/YYYY");
 				
 				for(var i in enabledDates) {
-					dateFound = enabledDates[i] == currentDate;
+					dateFound = enabledDates[i].format("x") == currentDate.format("x");
 					
 					if(dateFound) {
 						break;
@@ -104,6 +113,16 @@ function fillSchedule() {
 	});
 }
 
+function prepareModal() {
+	if($("[value='round-trip']:checked").length) {
+		$("#modalFlightsDetails #outboundDetails").removeClass("col-sm-12").addClass("col-sm-6");
+		$("#modalFlightsDetails #returnDetails").removeClass("hidden");
+	} else {
+		$("#modalFlightsDetails #outboundDetails").removeClass("col-sm-6").addClass("col-sm-12");
+		$("#modalFlightsDetails #returnDetails").addClass("hidden");
+	}
+}
+
 function searchAvailability() {
 	var form = $("#homeForm");
 	
@@ -113,10 +132,17 @@ function searchAvailability() {
 		if(data) {
 			try {
 				var errors = JSON.parse(data);
-				
+				var target;
+
 				for(var i in errors) {
 					for(var j in errors[i]) {
-						$("#" + i).after("<label class='error'>" + errors[i][j] + "</label>");
+						if($("#" + i).next(".input-group-addon").length) {
+							target = $("#" + i).parent();
+						} else {
+							target = $("#" + i);
+						}
+						
+						target.after("<label class='error'>" + errors[i][j] + "</label>");
 					}
 				}
 			} catch(e) {
@@ -135,15 +161,15 @@ function validateDates() {
 }
 
 $(window).load(function() {
-	$("#scheduleDeparture").data("DateTimePicker").minDate(moment());
-	$("#scheduleReturn").data("DateTimePicker").minDate(moment());
+	$("#scheduleDeparture").data("DateTimePicker").minDate(moment().format("DD/MM/YYYY"));
+	$("#scheduleReturn").data("DateTimePicker").minDate(moment().format("DD/MM/YYYY"));
 	$("#scheduleDeparture, #scheduleReturn").on("dp.change", function(e) {
 		if($("#scheduleDeparture").val() == "" && $("#scheduleReturn").val() == "") {
-			$("#scheduleDeparture").data("DateTimePicker").minDate(moment());
-			$("#scheduleReturn").data("DateTimePicker").minDate(moment());
+			$("#scheduleDeparture").data("DateTimePicker").minDate(moment().format("DD/MM/YYYY"));
+			$("#scheduleReturn").data("DateTimePicker").minDate(moment().format("DD/MM/YYYY"));
 		}
 		else if(e.date != "") {
-			$("#scheduleReturn").data("DateTimePicker").minDate(e.date.add(1, "days"));
+			$("#scheduleReturn").data("DateTimePicker").minDate(e.date.format("DD/MM/YYYY"));
 			
 			validateDates();
 		}

@@ -55,9 +55,9 @@
 <?php endforeach; ?>
 	</tbody>
 </table>
-<button id="confirmButton" class="btn btn-success btn-block disabled" disabled type="button" data-toggle="modal" data-target="#modalFlightsDetails"><?= __("Confirm") ?></button>
 <?php else : ?>
 <h4><?= __("No matches found") ?></h4>
 <?php endif; ?>
 <?php endif; ?>
+<button id="confirmButton" class="btn btn-success btn-block disabled" disabled type="button" data-toggle="modal" onclick="prepareModal();" data-target="#modalFlightsDetails"><?= __("Confirm") ?></button>
 <?php endif; ?>

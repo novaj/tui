@@ -26,8 +26,14 @@ label.error {
 	border-radius: 0px;
 }
 
-.bootstrap-datetimepicker-widget table td.day:not(.disabled) {
+.bootstrap-datetimepicker-widget table td.day:not(.disabled):not(.active) {
 	background-color: #dff0d8;
 	color: #3c763d;
+	border-radius: 0px;
+}
+
+.bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
+	text-shadow: none;
+	font-weight: bold;
 	border-radius: 0px;
 }
